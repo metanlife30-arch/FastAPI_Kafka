@@ -1,35 +1,26 @@
 from pydantic import BaseModel
+from typing import  Annotated
+from pydantic import BaseModel, Field
 
 
-class UserBase(BaseModel):  # базовый класс User
-    name: str
-    age: int
+class Аuthor(BaseModel):
+    id: int  # Уникальный идентификатор пользователя
+    name: str  # Имя пользователя
+    age: int  # Возраст пользователя
 
 
-class UserCreate(UserBase):
-    pass
+
+# Модель данных для создания нового поста
+class PostCreate(BaseModel):
+    title: str  # Заголовок поста
+    body: str  # Текст поста
+    author_id: int  # ID автора поста
 
 
-class User(UserBase):  # наследуем от класса UserBase
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-class PostBase(BaseModel):
-    title: str
-    body: str
-    author_id: int
-
-
-class PostCreate(PostBase):  # для добавления нового поста
-    pass
-
-
-class PostResponse(PostBase):
-    id: int
-    author: User
-
-    class Config:
-        orm_mode = True
+# Модель данных для создания нового пользователя
+class UserCreate(BaseModel):
+    # Используем Annotated для добавления метаданных и валидации
+    # Имя пользователя (от 2 до 20 символов), Имя пользователя (от 2 до 20 символов)
+    login: Annotated[str, Field(..., title="login to log in to the system", min_length=2, max_length=20)]
+    # Возраст пользователя (от 5 до 120 лет)
+    password: Annotated[str, Field(..., title="password login to log in to the system", min_length=5)]
