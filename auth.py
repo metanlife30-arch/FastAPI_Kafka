@@ -9,7 +9,7 @@ import jwt as pyjwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from models import User,Post 
 from pydantic import BaseModel
-from schemas import Аuthor,PostCreate,UserCreate
+from schemas import АuthorCreate,PostCreate,UserCreate
 from typing import  Optional
 from database import  session_local
 from sqlalchemy.orm import Session
@@ -22,11 +22,12 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 async def get_user( username: str = None):
         async with session_local() as session:
-             result= await  session.execute(select(User).where(User.login == username))
-             user = result.scalars().first()
-             return user
+            result= await  session.execute(select(User).where(User.login == username))
+            user = result.scalars().first()
+            return user
         
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
@@ -66,7 +67,7 @@ async def get_token(request: OAuth2PasswordRequestForm = Depends()):
         'username': user.login
     }
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exeption = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail='Could not validate credentials',
@@ -84,7 +85,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 
     # TODO: check if token expires
 
-    user = get_user( username=decode_username)
+    user = await get_user( username=decode_username)
 
     if user is None:
         raise credentials_exeption

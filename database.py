@@ -3,6 +3,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine,async_sessionmaker,AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase
 from config import get_db_url
+from sqlalchemy import Column, Integer
 
 # Указываем URL для подключения к базе данных SQLite
 # В данном случае база данных будет находиться в файле `itproger.db` в текущей директории
